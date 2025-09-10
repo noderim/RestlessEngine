@@ -9,5 +9,10 @@
   "repository": {
     "url": "https://github.com/noderim/RestlessEngine.git",
     "type": "git"
+  },
+    "author": {
+    "name": "Adam",
+    "email": "noderim.dev@gmail.com",
+    "url": "https://github.com/noderim"
   }
 }
