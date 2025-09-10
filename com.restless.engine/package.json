@@ -1,0 +1,24 @@
+{
+  "name": "com.restless.engine",
+  "displayName": "Restless Engine",
+  "version": "0.0.5",
+  "unity": "2023.1",
+  "description": "The Restless Engine is a lightweight application engine for Unity.",
+  "assetsPackageFile": "Packages/com.restless.engine/assets.package",
+  "dependencies": {
+    "com.unity.scriptablebuildpipeline": "2.1.4"
+  },
+  "documentationUrl": "https://trello.com/b/FwOl8MRt/restless-engine",
+  "repository": {
+    "url": "https://github.cds.internal.unity3d.com/unity/Addressables.git",
+    "type": "git",
+    "revision": "a5d37e7459f86f9108e521236be616077803ca7c"
+  },
+  "samples": [
+    {
+      "displayName": "Restless Engine Assets",
+      "description": "This are the required assets for the Restless Engine.",
+      "path": "Samples~/RestlessEngineAssets"
+    }
+  ]
+}
