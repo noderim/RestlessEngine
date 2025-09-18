@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RestlessEngine.Application.Settings
 {
-    [CreateAssetMenu(fileName = "Settings", menuName = "Settings/Settings")]
+    [CreateAssetMenu(fileName = "Settings", menuName = "RestlessEngine/Settings/Settings")]
     public class SettingsData : ScriptableObject
     {
         [SerializeField]

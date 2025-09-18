@@ -8,7 +8,7 @@ namespace RestlessEngine.SceneManagement
 {
 
     [System.Serializable]
-    [CreateAssetMenu(fileName = "Scenes Group", menuName = "ScriptableObjects/Scenes Group")]
+    [CreateAssetMenu(fileName = "Scenes Group", menuName = "RestlessEngine/Scenes/Scenes Group")]
     public class ScenesGroup : ScriptableObject
     {
         [Expandable]

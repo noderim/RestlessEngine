@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace RestlessEngine.GameSaves
 {
-    [CreateAssetMenu(fileName = "SavesIndexer", menuName = "Save System/Saves Indexer")]
+    [CreateAssetMenu(fileName = "SavesIndexer", menuName = "RestlessEngine/Save System/Saves Indexer")]
     public class SavesIndexer : ScriptableObject
     {
         public List<SaveMetadata> saves = new List<SaveMetadata>();

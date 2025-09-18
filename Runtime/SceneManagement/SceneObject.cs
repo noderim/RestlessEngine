@@ -5,7 +5,7 @@ using RestlessLib.Attributes;
 namespace RestlessEngine.SceneManagement
 {
     [System.Serializable]
-    [CreateAssetMenu(fileName = "SceneObject", menuName = "ScriptableObjects/SceneObject", order = 1)]
+    [CreateAssetMenu(fileName = "SceneObject", menuName = "RestlessEngine/Scenes/SceneObject", order = 1)]
     public class SceneObject : ScriptableObject
     {
         [Scene]
