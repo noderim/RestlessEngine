@@ -181,14 +181,12 @@ namespace RestlessEditor
                 pkg.OpenInGitHub();
             }
             GUILayout.Space(5);
-            if (string.IsNullOrEmpty(pkg.pathToAssetsPackage))
+            if (string.IsNullOrEmpty(pkg.pathToAssetsPackage) == false)
             {
+                if (GUILayout.Button("Import Assets", GUILayout.Width(buttonwidth)))
                 {
-                    if (GUILayout.Button("Import Assets", GUILayout.Width(buttonwidth)))
-                    {
-                        Debug.Log($"Importing assets for {pkg.Name}");
-                        RestlessLib.Editor.PackageAssetsImporter.ImportAssetsFromPackageJson(pkg.Name);
-                    }
+                    Debug.Log($"Importing assets for {pkg.Name}");
+                    RestlessLib.Editor.PackageAssetsImporter.ImportAssetsFromPackageJson(pkg.Name);
                 }
             }
             else
@@ -204,5 +202,4 @@ namespace RestlessEditor
             EditorGUILayout.EndHorizontal();
         }
     }
-
 }

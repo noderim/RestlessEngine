@@ -45,6 +45,9 @@ namespace RestlessEditor
                     LatestVersion = await GitVersionFetcher.FetchLatestVersionFromGit(giturl);
                 }
             }
+#if DebugInfoPackages
+            Debug.Log($"Refreshed package info for {Name}. Version: {Version}, Latest: {LatestVersion}, InProject: {InProject}, pathToAssetsPackage: {pathToAssetsPackage}, giturl: {giturl}, FetchLatestFromGit: {FetchLatestFromGit}, DisplayName: {DisplayName}");
+#endif
         }
         public void OpenInGitHub()
         {
