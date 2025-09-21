@@ -186,8 +186,8 @@ namespace RestlessEditor
                 {
                     if (GUILayout.Button("Import Assets", GUILayout.Width(buttonwidth)))
                     {
-                        Debug.Log($"Importing assets for {name}");
-                        RestlessLib.Editor.PackageAssetsImporter.ImportAssetsFromPackageJson(name);
+                        Debug.Log($"Importing assets for {pkg.Name}");
+                        RestlessLib.Editor.PackageAssetsImporter.ImportAssetsFromPackageJson(pkg.Name);
                     }
                 }
             }
@@ -196,7 +196,7 @@ namespace RestlessEditor
                 GUI.enabled = false;
                 if (GUILayout.Button("Import Assets", GUILayout.Width(buttonwidth)))
                 {
-                    Debug.Log($"Importing assets for {name}");
+                    //just grafical
                 }
                 GUI.enabled = true;
             }

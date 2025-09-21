@@ -23,7 +23,7 @@ namespace RestlessEditor
                 Version = package.version;
                 DisplayName = package.displayName;
                 giturl = package.repository.url;
-                pathToAssetsPackage = RestlessLib.Editor.PackageAssetsImporter.GetAssetsPathFromPackageJson(Name);
+                pathToAssetsPackage = RestlessLib.Editor.PackageAssetsImporter.GetAssetsPathFromPackageJson(Name, silent: true);
                 if (FetchLatestFromGit)
                 {
                     LatestVersion = await GitVersionFetcher.FetchLatestVersionFromGit(giturl);
