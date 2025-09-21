@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -12,8 +13,9 @@ namespace RestlessEditor
         public string pathToAssetsPackage;
         public string giturl;
         public bool InProject;
+        public bool FetchLatestFromGit = false;
 
-        public void Refresh()
+        public async Task Refresh()
         {
             var package = UnityEditor.PackageManager.PackageInfo.FindForPackageName(Name);
             if (package != null)
@@ -21,7 +23,16 @@ namespace RestlessEditor
                 Version = package.version;
                 DisplayName = package.displayName;
                 giturl = package.repository.url;
-                LatestVersion = package.versions.latest;
+
+                if (FetchLatestFromGit)
+                {
+                    LatestVersion = await GitVersionFetcher.FetchLatestVersionFromGit(giturl);
+                }
+                else
+                {
+                    LatestVersion = package.versions.latest;
+                }
+
                 InProject = true;
 
             }
@@ -29,40 +40,15 @@ namespace RestlessEditor
             {
                 Version = "Not installed";
                 InProject = false;
-            }
-        }
-        public void GetInfofromPackageFile(string packageJsonPath)
-        {
-            if (System.IO.File.Exists(packageJsonPath))
-            {
-                var json = System.IO.File.ReadAllText(packageJsonPath);
-                var package = JsonUtility.FromJson<PackageInfo>(json);
-                if (package != null)
+                if (FetchLatestFromGit)
                 {
-                    Name = package.Name;
-                    DisplayName = package.DisplayName;
-                    Version = package.Version;
-                    LatestVersion = package.LatestVersion;
-                    giturl = package.giturl;
+                    LatestVersion = await GitVersionFetcher.FetchLatestVersionFromGit(giturl);
                 }
             }
-        }
-        public void UpdatePackage()
-        {
-
         }
         public void OpenInGitHub()
         {
             Application.OpenURL(giturl);
-        }
-        public void ImportAssets()
-        {
-            // Import the package assets
-            var packagePath = System.IO.Path.GetDirectoryName(pathToAssetsPackage);
-            if (!string.IsNullOrEmpty(packagePath))
-            {
-                UnityEditor.AssetDatabase.ImportPackage(packagePath, true);
-            }
         }
     }
 }

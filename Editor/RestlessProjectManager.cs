@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using RestlessLib.SaveUtility;
+using System.Threading.Tasks;
 
 namespace RestlessEditor
 {
@@ -31,7 +32,7 @@ namespace RestlessEditor
 
         static private float refreshInterval = 60f; // 60 seconds
         static private float lastRefreshTime = 0f;
-        public static void Refresh()
+        public static async Task Refresh()
         {
             ProjectName = PlayerSettings.productName;
             ProjectVersion = PlayerSettings.bundleVersion;
@@ -55,20 +56,24 @@ namespace RestlessEditor
             EditorPrefs.SetFloat(TotalTimeKey, Workhours);
             SaveUtility.Save(savedData, "project_workhours.json", false);
 
+            foreach (var pkg in TrackedPackages)
+            {
+                await pkg.Refresh();
+            }
         }
 
         private static void Update()
         {
             if (EditorApplication.timeSinceStartup - lastRefreshTime > refreshInterval)
             {
-                Refresh();
+                _ = Refresh();
                 lastRefreshTime = (float)EditorApplication.timeSinceStartup;
             }
         }
 
         private static void OnEditorQuit()
         {
-            Refresh();
+            _ = Refresh();
         }
 
         static RestlessProjectManager()
@@ -92,39 +97,51 @@ namespace RestlessEditor
             EditorApplication.update += Update;
             EditorApplication.quitting += OnEditorQuit;
 
-            PackageInfo RestlessEnginePackage = new PackageInfo
-            {
-                Name = "com.restless.engine",
-                DisplayName = "Restless Engine",
-                pathToAssetsPackage = "",
-                giturl = ""
-            };
+
+            // pre-defined tracked packages:
             PackageInfo RestlessLibPackage = new PackageInfo
             {
                 Name = "com.restless.lib",
                 DisplayName = "Restless Lib",
-                pathToAssetsPackage = "Assets/Project/com.restless.lib",
-                giturl = ""
+                giturl = "https://github.com/noderim/RestlessLib",
+                pathToAssetsPackage = RestlessLib.Editor.PackageAssetsImporter.GetAssetsPathFromPackageJson("com.restless.lib", silent: true),
+                FetchLatestFromGit = true
             };
+
+            PackageInfo RestlessEnginePackage = new PackageInfo
+            {
+                Name = "com.restless.engine",
+                DisplayName = "Restless Engine",
+                giturl = "https://github.com/noderim/RestlessEngine",
+                pathToAssetsPackage = RestlessLib.Editor.PackageAssetsImporter.GetAssetsPathFromPackageJson("com.restless.engine", silent: true),
+                FetchLatestFromGit = true
+            };
+
             PackageInfo RestlessUiPackage = new PackageInfo
             {
                 Name = "com.restless.ui",
                 DisplayName = "Restless UI",
-                pathToAssetsPackage = "Assets/Project/com.restless.ui",
-                giturl = ""
+                giturl = "https://github.com/noderim/RestlessUI",
+                pathToAssetsPackage = RestlessLib.Editor.PackageAssetsImporter.GetAssetsPathFromPackageJson("com.restless.ui", silent: true),
+                FetchLatestFromGit = true
             };
-            TrackedPackages.Add(RestlessEnginePackage);
-            TrackedPackages.Add(RestlessLibPackage);
-            TrackedPackages.Add(RestlessUiPackage);
+
+            AddTrackedPackage(RestlessLibPackage);
+            AddTrackedPackage(RestlessEnginePackage);
+            AddTrackedPackage(RestlessUiPackage);
 
             foreach (var pkg in TrackedPackages)
             {
-                pkg.Refresh();
+                _ = pkg.Refresh();
             }
         }
         public static void AddTrackedPackage(PackageInfo package)
         {
-            TrackedPackages.Add(package);
+            _ = package.Refresh();
+            if (!TrackedPackages.Contains(package))
+            {
+                TrackedPackages.Add(package);
+            }
         }
         private static Texture2D GetDefaultIcon()
         {

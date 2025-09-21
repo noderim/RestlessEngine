@@ -2,6 +2,7 @@ namespace RestlessEditor
 {
     using UnityEngine;
     using UnityEditor;
+    using System;
 
     public class RestlessProjectManagerWindow : EditorWindow
     {
@@ -23,9 +24,9 @@ namespace RestlessEditor
         void OnEnable()
         {
             //it will be a package so use AssetDatabase.LoadAssetAtPath with the package path
-            trelloIcon = (Texture2D)AssetDatabase.LoadAssetAtPath("Packages/com.restless.engine/RestlessEngine/Resources/trello_icon.png", typeof(Texture2D));
-            githubIcon = (Texture2D)AssetDatabase.LoadAssetAtPath("Packages/com.restless.engine/RestlessEngine/Resources/github_icon.png", typeof(Texture2D));
-            docsIcon = (Texture2D)AssetDatabase.LoadAssetAtPath("Packages/com.restless.engine/RestlessEngine/Resources/docs_icon.png", typeof(Texture2D));
+            trelloIcon = (Texture2D)AssetDatabase.LoadAssetAtPath("Packages/com.restless.engine/Editor/Resources/trello_icon.png", typeof(Texture2D));
+            githubIcon = (Texture2D)AssetDatabase.LoadAssetAtPath("Packages/com.restless.engine/Editor/Resources/github_icon.png", typeof(Texture2D));
+            docsIcon = (Texture2D)AssetDatabase.LoadAssetAtPath("Packages/com.restless.engine/Editor/Resources/docs_icon.png", typeof(Texture2D));
         }
         private void GetStyles()
         {
@@ -126,7 +127,7 @@ namespace RestlessEditor
             EditorGUILayout.BeginVertical("box");
             foreach (var pkg in RestlessProjectManager.TrackedPackages)
             {
-                DrawPackageEntry(pkg.Name, pkg.Version, pkg.LatestVersion, !string.IsNullOrEmpty(pkg.pathToAssetsPackage));
+                DrawPackageEntry(pkg);
                 DrawSeperator();
             }
             EditorGUILayout.EndVertical();
@@ -151,59 +152,43 @@ namespace RestlessEditor
             GUILayout.FlexibleSpace();
             GUILayout.EndVertical();
         }
-        private void DrawPackageEntry(string name, string current, string latest, bool haveAssets)
+        private void DrawPackageEntry(PackageInfo pkg)
         {
             int entryHeight = 60;
             int buttonwidth = 100;
             GUILayout.BeginHorizontal(GUILayout.Height(entryHeight));
 
             BeginCentered(entryHeight);
-            GUILayout.Label(name, GUILayout.Width(100));
+            GUILayout.Label(name, GUILayout.Width(120));
             EndCentered();
 
             GUILayout.Space(5);
 
             BeginCentered(entryHeight);
-            GUILayout.Label("v" + current, GUILayout.Width(60));
+            GUILayout.Label(pkg.Version, GUILayout.Width(80));
             EndCentered();
 
             GUILayout.Space(5);
-            if (current != latest)
-            {
-                BeginCentered(entryHeight);
-                GUILayout.Label("v" + latest, GUILayout.Width(100));
-                GUILayout.Label("new version available!", GUILayout.Width(100));
-                EndCentered();
+            BeginCentered(entryHeight);
+            GUILayout.Label(pkg.LatestVersion, GUILayout.Width(120));
+            GUILayout.Label("new version available!", GUILayout.Width(120));
+            EndCentered();
 
-                BeginCentered(entryHeight);
-                GUILayout.Space(5);
-                if (GUILayout.Button("Update", GUILayout.Width(buttonwidth)))
-                {
-                    Debug.Log($"Updated {name} to {latest}");
-                }
-            }
-            else
+            BeginCentered(entryHeight);
+            GUILayout.Space(5);
+            if (GUILayout.Button("Open Repo", GUILayout.Width(buttonwidth)))
             {
-                BeginCentered(entryHeight);
-                GUILayout.Label("v" + latest, GUILayout.Width(100));
-                GUILayout.Label("up to date", GUILayout.Width(100));
-                EndCentered();
-
-                GUILayout.Space(5);
-                BeginCentered(entryHeight);
-                GUI.enabled = false;
-                if (GUILayout.Button("Update", GUILayout.Width(buttonwidth)))
-                {
-                    Debug.Log($"Updated {name} to {latest}");
-                }
-                GUI.enabled = true;
+                pkg.OpenInGitHub();
             }
             GUILayout.Space(5);
-            if (haveAssets)
+            if (string.IsNullOrEmpty(pkg.pathToAssetsPackage) == false && pkg.InProject == true)
             {
-                if (GUILayout.Button("Import Assets", GUILayout.Width(buttonwidth)))
                 {
-                    Debug.Log($"Importing assets for {name}");
+                    if (GUILayout.Button("Import Assets", GUILayout.Width(buttonwidth)))
+                    {
+                        Debug.Log($"Importing assets for {name}");
+                        RestlessLib.Editor.PackageAssetsImporter.ImportAssetsFromPackageJson(name);
+                    }
                 }
             }
             else

@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "unity": "2023.1",
   "description": "The Restless Engine is a lightweight application engine for Unity.",
-  "assetsPackageFile": "Packages/com.restless.engine/assets.package",
+  "assetsPackageFile": "Application.unitypackage",
   "dependencies": {
     "com.unity.localization": "1.5.7"
   },
@@ -18,13 +18,6 @@
     "url": "https://github.com/noderim/RestlessEngine.git",
     "type": "git"
   },
-  "samples": [
-    {
-      "displayName": "Restless Engine Assets",
-      "description": "This are the required assets for the Restless Engine.",
-      "path": "Samples~/RestlessEngineAssets"
-    }
-  ],
   "git-dependencies": [
     "https://github.com/noderim/RestlessLib.git",
     "https://github.com/ayellowpaper/SerializedDictionary.git"
