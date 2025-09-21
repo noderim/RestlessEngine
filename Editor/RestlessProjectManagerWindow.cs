@@ -171,7 +171,10 @@ namespace RestlessEditor
             GUILayout.Space(5);
             BeginCentered(entryHeight);
             GUILayout.Label(pkg.LatestVersion, GUILayout.Width(120));
-            GUILayout.Label("new version available!", GUILayout.Width(120));
+            if (pkg.Version != pkg.LatestVersion)
+            {
+                GUILayout.Label("new version available!", GUILayout.Width(120));
+            }
             EndCentered();
 
             BeginCentered(entryHeight);
