@@ -159,7 +159,7 @@ namespace RestlessEditor
             GUILayout.BeginHorizontal(GUILayout.Height(entryHeight));
 
             BeginCentered(entryHeight);
-            GUILayout.Label(name, GUILayout.Width(120));
+            GUILayout.Label(pkg.Name, GUILayout.Width(120));
             EndCentered();
 
             GUILayout.Space(5);
@@ -181,7 +181,7 @@ namespace RestlessEditor
                 pkg.OpenInGitHub();
             }
             GUILayout.Space(5);
-            if (string.IsNullOrEmpty(pkg.pathToAssetsPackage) == false && pkg.InProject == true)
+            if (string.IsNullOrEmpty(pkg.pathToAssetsPackage))
             {
                 {
                     if (GUILayout.Button("Import Assets", GUILayout.Width(buttonwidth)))
