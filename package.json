@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "unity": "2023.1",
   "description": "The Restless Engine is a lightweight application engine for Unity.",
-  "assetsPackageFile": "Application.unitypackage",
+  "pathToAssets": "Application.unitypackage",
   "dependencies": {
     "com.unity.localization": "1.5.7"
   },
