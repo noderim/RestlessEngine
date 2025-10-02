@@ -125,12 +125,37 @@ namespace RestlessEditor
             GUILayout.Label("Packages", smallheaderStyle);
 
             EditorGUILayout.BeginVertical("box");
+            DrawTableHeaders();
+            DrawSeperator();
             foreach (var pkg in RestlessProjectManager.TrackedPackages)
             {
                 DrawPackageEntry(pkg);
                 DrawSeperator();
             }
             EditorGUILayout.EndVertical();
+        }
+        private void DrawTableHeaders()
+        {
+            int entryHeight = 20;
+            GUILayout.Space(5);
+            GUILayout.BeginHorizontal(GUILayout.Height(entryHeight));
+
+            BeginCentered(entryHeight);
+            GUILayout.Label("Package Name", GUILayout.Width(120));
+            EndCentered();
+
+            GUILayout.Space(5);
+
+            BeginCentered(entryHeight);
+            GUILayout.Label("Version", GUILayout.Width(80));
+            EndCentered();
+
+            GUILayout.Space(5);
+            BeginCentered(entryHeight);
+            GUILayout.Label("Latest Version", GUILayout.Width(120));
+            EndCentered();
+            GUILayout.Label("", GUILayout.Width(105));
+            EditorGUILayout.EndHorizontal();
         }
 
         private void DrawSeperator()
