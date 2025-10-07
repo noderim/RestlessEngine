@@ -80,9 +80,9 @@ namespace RestlessEngine.GameSaves
 
             LogManager.Log("Game saved");
         }
-        public SerializedDictionary<string, string> CaptureISaveables()
+        public AYellowpaper.SerializedCollections.Dictionary<string, string> CaptureISaveables()
         {
-            var data = new SerializedDictionary<string, string>();
+            var data = new AYellowpaper.SerializedCollections.Dictionary<string, string>();
             // Save all ISaveable systems
             foreach (var saveable in saveables)
             {
@@ -95,7 +95,7 @@ namespace RestlessEngine.GameSaves
 
             return data;
         }
-        public void RestoreISaveables(SerializedDictionary<string, string> data)
+        public void RestoreISaveables(AYellowpaper.SerializedCollections.Dictionary<string, string> data)
         {
             // Restore all ISaveable systems
             foreach (var saveable in saveables)

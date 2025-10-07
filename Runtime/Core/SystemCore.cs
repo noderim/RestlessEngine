@@ -7,8 +7,8 @@ using UnityEngine.Events;
 namespace RestlessEngine
 {
     /// <summary>
-    /// Implements IInitializable, IValidable, and IMonitorable interfaces.
-    /// Iinitializable - Initialize method, IValidable - SelfValidable Optional Method used by ValidateUtility, IMonitorable - Monitor context.
+    /// Implements IInitializable, IValidable
+    /// Iinitializable - Initialize method, IValidable - SelfValidable Optional Method used by ValidateUtility
     /// Overridable: Init, BeforeInit, AfterInit, OnShutdown methods.
     /// </summary>
     /// <typeparam name="T">The type of the system inheriting from SystemCore.</typeparam>
@@ -45,15 +45,13 @@ namespace RestlessEngine
         {
             SetSystemState(SystemState.Initializing);
             LogManager.Log($"Initializing {name}...", LogTag.LifeCycle);
+
             try
             {
                 BeforeInit();
-
                 isInitialized = Init();
 
                 OnInitializationEvent?.Invoke();
-
-                AfterInit();
             }
             catch (Exception ex)
             {
@@ -66,7 +64,7 @@ namespace RestlessEngine
                 else
                 {
                     SetSystemState(SystemState.Initialized);
-                    LogManager.Log($"{name} initialization passed with errors: {ex.Message}", LogTag.LifeCycle);
+                    LogManager.LogWarning($"{name} initialization passed with errors: {ex.Message}", LogTag.LifeCycle);
 
                     AfterInit();
                     return true;
