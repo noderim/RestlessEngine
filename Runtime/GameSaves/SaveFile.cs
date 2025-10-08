@@ -16,7 +16,7 @@ namespace RestlessEngine.GameSaves
         public float playTimeSeconds;
         public bool isAutosave;
         [SerializedDictionary("Key", "Saved Json")]
-        public Dictionary<string, string> data;
+        public SerializedDictionary<string, string> data;
         public SceneObject onloadScene;
 
         public bool Compare(SaveMetadata metadata)
