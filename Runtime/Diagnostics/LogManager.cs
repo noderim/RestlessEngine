@@ -1,6 +1,8 @@
 using System;
 using RestlessLib;
 using UnityEngine;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 namespace RestlessEngine.Diagnostics
 {
@@ -23,6 +25,7 @@ namespace RestlessEngine.Diagnostics
 
         public bool LogTypeCheckForNormalLogsOnly = true;
 
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         public static void Log(string message, LogTag logType = LogTag.Debug)
         {
             if ((ActiveLogType & logType) == logType)
@@ -30,7 +33,7 @@ namespace RestlessEngine.Diagnostics
                 Debug.Log($"[{logType}] - {message}");
             }
         }
-
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         public static void LogWarning(string message, LogTag logType = LogTag.Debug)
         {
             if (Instance.LogTypeCheckForNormalLogsOnly)
@@ -43,7 +46,7 @@ namespace RestlessEngine.Diagnostics
                 Debug.LogWarning($"[{logType}] - {message}");
             }
         }
-
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         public static void LogError(string message, LogTag logType = LogTag.Debug)
         {
             if (Instance.LogTypeCheckForNormalLogsOnly)
