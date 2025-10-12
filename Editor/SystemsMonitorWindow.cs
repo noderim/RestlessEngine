@@ -1,13 +1,12 @@
+using UnityEngine;
+using UnityEditor;
+using RestlessEngine.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
+using RestlessEngine;
+
 namespace RestlessEditor
 {
-    using UnityEngine;
-    using UnityEditor;
-    using RestlessEngine.Diagnostics;
-    using System.Collections.Generic;
-    using System.Linq;
-    using RestlessEngine;
-    using UnityEngine.UI;
-
     public class SystemsMonitorWindow : EditorWindow
     {
         private string searchQuery = "";
@@ -34,7 +33,7 @@ namespace RestlessEditor
             if (GUILayout.Button("X", GUI.skin.FindStyle("ToolbarButton"), GUILayout.Width(20)))
             {
                 searchQuery = "";
-                GUI.FocusControl(null); // Remove focus from the text field
+                GUI.FocusControl(null);
             }
             EditorGUILayout.EndHorizontal();
 
@@ -55,20 +54,13 @@ namespace RestlessEditor
 
             DrawSystemListMultiColumn(contexts);
 
-            // foreach (var context in contexts)
-            // {
-            //     DrawSystemCard(context);
-            // }
-
-
-
             EditorGUILayout.EndScrollView();
 
         }
 
         private void DrawSystemListMultiColumn(List<SystemMonitorContext> contexts)
         {
-            int columns = 1; // domyślnie
+            int columns = 1;
             if (position.width > 750) columns = 2;
             if (position.width > 1100) columns = 3;
 
@@ -77,8 +69,7 @@ namespace RestlessEditor
             EditorGUILayout.BeginHorizontal();
             foreach (var ctx in contexts)
             {
-                // Każda karta ma ExpandWidth = false, stała szerokość np. 200
-                GUILayout.BeginVertical(GUILayout.Width(position.width / columns - 8));
+                GUILayout.BeginVertical(GUILayout.MaxWidth(position.width / columns), GUILayout.ExpandWidth(true));
                 DrawSystemCard(ctx);
                 GUILayout.EndVertical();
 
@@ -99,6 +90,7 @@ namespace RestlessEditor
             int margin = 4;
             int padding = 8;
             Color bgcolor = new Color(0.3f, 0.3f, 0.3f);
+
             Texture2D texture = new Texture2D(1, 1);
             texture.filterMode = FilterMode.Point;
             texture.SetPixel(0, 0, bgcolor);
@@ -106,46 +98,46 @@ namespace RestlessEditor
 
             boxStyle.normal.background = texture;
             boxStyle.normal.textColor = Color.black;
-
             boxStyle.margin = new RectOffset(margin, margin, margin, margin);
             boxStyle.padding = new RectOffset(padding, padding, padding, padding);
 
-            GUI.color = bgcolor;
-            // ramka karty
-            using (new EditorGUILayout.HorizontalScope(boxStyle))
+            GUILayout.BeginVertical(boxStyle);
+
+            GUILayout.BeginHorizontal();
+
+            // Left: system info
+            GUILayout.BeginVertical();
+            GUILayout.Label(context.SystemName, EditorStyles.boldLabel);
+            GUILayout.Label($"Init Priority: {context.InitPriority}");
+            GUILayout.Label($"Is Initialized: {context.IsInitialized}");
+            GUILayout.Label($"Validated: {context.Validated}");
+            GUILayout.EndVertical();
+
+            // Right: state and indicator
+            GUILayout.FlexibleSpace(); // pushes right section to edge
+            GUILayout.BeginVertical(GUILayout.Width(120));
+            GUILayout.BeginHorizontal();
+
+            GUIStyle rightAligned = new GUIStyle(EditorStyles.label)
             {
-                // LEWA: nazwa + parametry (flex)
-                using (new EditorGUILayout.VerticalScope(GUILayout.ExpandWidth(true)))
-                {
-                    GUI.color = Color.white;
-                    EditorGUILayout.LabelField(context.SystemName, EditorStyles.boldLabel);
-                    EditorGUILayout.LabelField("Initialized: " + context.IsInitialized);
-                    EditorGUILayout.LabelField("Validated: " + context.Validated);
-                    EditorGUILayout.HelpBox(string.IsNullOrEmpty(context.message) ? "No messages." : context.message, MessageType.None);
-                }
+                alignment = TextAnchor.MiddleRight
 
-                // PRAWA: 120 px szerokości, środek w pionie
-                using (new EditorGUILayout.VerticalScope(GUILayout.Width(120)))
-                {
-                    Rect rect = GUILayoutUtility.GetRect(120, 40, GUILayout.ExpandHeight(false)); // minimalna wysokość 40
-                    float midY = rect.y + rect.height / 2f;
+            };
+            rightAligned.normal.textColor = GetStateColor(context.State);
+            GUILayout.Label($"{context.State}", rightAligned, GUILayout.Width(100));
 
-                    // dioda po prawej
-                    Rect diodeRect = new Rect(rect.xMax - 16, midY - 6, 12, 12);
-                    DrawIndicator(diodeRect, GetStateColor(context.State));
+            // Indicator circle
+            Rect lastRect = GUILayoutUtility.GetRect(20, 20);
+            DrawIndicator(lastRect, GetStateColor(context.State));
 
-                    // tekst po lewej, ale align = Right -> napis będzie przylegał do diody
-                    GUIStyle stateStyle = new GUIStyle(EditorStyles.label)
-                    {
-                        alignment = TextAnchor.MiddleRight,
-                        normal = { textColor = GetStateColor(context.State) }
-                    };
-                    EditorGUI.LabelField(new Rect(rect.x, midY - 8, rect.width - 20, 16), context.State.ToString(), stateStyle);
-                }
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
 
-
-            }
+            GUILayout.EndHorizontal();
+            EditorGUILayout.HelpBox(string.IsNullOrEmpty(context.message) ? "No messages." : context.message, MessageType.None);
+            GUILayout.EndVertical();
         }
+
         private void DrawIndicator(Rect rect, Color color)
         {
             Vector2 center = rect.center;

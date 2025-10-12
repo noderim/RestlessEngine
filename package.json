@@ -1,7 +1,7 @@
 {
   "name": "com.restless.engine",
   "displayName": "Restless Engine",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "unity": "2023.1",
   "description": "The Restless Engine is a lightweight application engine for Unity.",
   "pathToAssets": "Application.unitypackage",

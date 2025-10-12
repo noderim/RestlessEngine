@@ -15,16 +15,20 @@ namespace RestlessEngine
     public abstract class SystemCore : MonoBehaviour, IValidable, IInitializable
     {
         [SerializeField, ReadOnly]
-        protected bool isInitialized = false;
-        public bool IsInitialized => isInitialized;
+        protected bool _isInitialized = false;
+        public bool IsInitialized => _isInitialized;
 
         [SerializeField]
-        private int initPriority;
-        public int InitPriority => initPriority;
+        private int _initPriority;
+        public int InitPriority => _initPriority;
 
         [SerializeField, ReadOnly]
-        protected SystemState systemState;
-        public SystemState SystemState => systemState;
+        protected SystemState _systemState;
+        public SystemState SystemState => _systemState;
+
+        [SerializeField, ReadOnly]
+        private string _message;
+        public string Message => _message;
 
         #region // Events
         public UnityEvent OnInitializationEvent { get; private set; } = new UnityEvent();
@@ -49,7 +53,7 @@ namespace RestlessEngine
             try
             {
                 BeforeInit();
-                isInitialized = Init();
+                _isInitialized = Init();
 
                 OnInitializationEvent?.Invoke();
             }
@@ -113,7 +117,7 @@ namespace RestlessEngine
 
             OnShutdown();
 
-            isInitialized = false;
+            _isInitialized = false;
             LogManager.Log($"{name} shutdown.", LogTag.LifeCycle);
             SetSystemState(SystemState.Uninitialized);
         }
@@ -138,11 +142,11 @@ namespace RestlessEngine
 
             if (!validation)
             {
-                LogManager.LogWarning($"Validation failed - {this.GetType().Name} [State: {systemState}]", LogTag.Validation);
+                LogManager.LogWarning($"Validation failed - {this.GetType().Name} [State: {_systemState}]", LogTag.Validation);
             }
             else
             {
-                LogManager.Log($"Validation passed - {this.GetType().Name} [State: {systemState}]", LogTag.Validation);
+                LogManager.Log($"Validation passed - {this.GetType().Name} [State: {_systemState}]", LogTag.Validation);
 
             }
             return validation;
@@ -152,7 +156,7 @@ namespace RestlessEngine
         #region // HELPER METHODS
         protected void SetSystemState(SystemState state)
         {
-            systemState = state;
+            _systemState = state;
             OnSystemStateChanged?.Invoke(state);
         }
 

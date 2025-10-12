@@ -41,6 +41,7 @@ namespace RestlessEngine.Diagnostics
         public SystemCore System;
         public string SystemName;
         public bool IsInitialized;
+        public int InitPriority;
         public SystemState State;
 
         public bool Validated;
@@ -51,13 +52,15 @@ namespace RestlessEngine.Diagnostics
             System = system;
             SystemName = system.GetType().Name;
             IsInitialized = system.IsInitialized;
+            InitPriority = system.InitPriority;
             State = system.SystemState;
+            message = system.Message;
         }
-
         public void Refresh()
         {
             IsInitialized = System.IsInitialized;
             State = System.SystemState;
+            message = System.Message;
         }
     }
 
