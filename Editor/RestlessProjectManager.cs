@@ -20,7 +20,8 @@ namespace RestlessEditor
         private class SavedData { public double total_project_workhours; }
         private static SavedData savedData = new SavedData();
         public static float Workhours { get; private set; }
-        public static float CurrentSessionWorkhours { get; private set; }
+        private static double sessionStartTimeOffset = 0f;
+        public static float CurrentSessionWorkhours => (float)(EditorApplication.timeSinceStartup - sessionStartTimeOffset) / 3600f;
         public static string BuildsPath { get; private set; }
         public static string LatestBuildName { get; private set; }
 
@@ -30,9 +31,18 @@ namespace RestlessEditor
         private const string TotalTimeKey = "WorkTimeTracker_TotalTime";
         static DateTime lastTimecheck;
 
-        static private float refreshInterval = 60f; // 60 seconds
-        static private float lastRefreshTime = 0f;
-        public static async Task Refresh()
+        public static void ResetWorkhours()
+        {
+            savedData.total_project_workhours = 0;
+            EditorPrefs.SetFloat(TotalTimeKey, 0f);
+
+            sessionStartTimeOffset = EditorApplication.timeSinceStartup;
+            lastTimecheck = DateTime.Now;
+
+            SaveData();
+        }
+
+        public static void SaveData()
         {
             ProjectName = PlayerSettings.productName;
             ProjectVersion = PlayerSettings.bundleVersion;
@@ -48,13 +58,18 @@ namespace RestlessEditor
             Workhours = EditorPrefs.GetFloat(TotalTimeKey, 0f);
             Workhours += (float)(DateTime.Now - lastTimecheck).TotalHours;
 
-            CurrentSessionWorkhours = (float)EditorApplication.timeSinceStartup / 3600f;
+            // CurrentSessionWorkhours is now a specific property
 
             lastTimecheck = DateTime.Now;
             savedData.total_project_workhours = TotalProjectWorkhours;
 
             EditorPrefs.SetFloat(TotalTimeKey, Workhours);
             SaveUtility.Save(savedData, "project_workhours.json", false);
+        }
+
+        public static async Task Refresh()
+        {
+            SaveData();
 
             foreach (var pkg in TrackedPackages)
             {
@@ -62,18 +77,9 @@ namespace RestlessEditor
             }
         }
 
-        private static void Update()
-        {
-            if (EditorApplication.timeSinceStartup - lastRefreshTime > refreshInterval)
-            {
-                _ = Refresh();
-                lastRefreshTime = (float)EditorApplication.timeSinceStartup;
-            }
-        }
-
         private static void OnEditorQuit()
         {
-            _ = Refresh();
+            SaveData();
         }
 
         static RestlessProjectManager()
@@ -90,11 +96,11 @@ namespace RestlessEditor
             TotalProjectWorkhours = savedData.total_project_workhours;
 
             Workhours = EditorPrefs.GetFloat(TotalTimeKey, 0f);
-            CurrentSessionWorkhours = 0f;
+
             lastTimecheck = DateTime.Now;
 
 
-            EditorApplication.update += Update;
+            // Note: Update removed
             EditorApplication.quitting += OnEditorQuit;
 
 
@@ -166,8 +172,6 @@ namespace RestlessEditor
             }
             return Texture2D.blackTexture;
         }
-
-
     }
 
     public class BuildPostProcessor : IPostprocessBuildWithReport

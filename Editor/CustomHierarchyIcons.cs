@@ -69,7 +69,7 @@ namespace RestlessEditor
         }
         private static void OnHierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
         {
-            GameObject obj = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            GameObject obj = EditorUtility.EntityIdToObject(instanceID) as GameObject;
             if (obj == null)
             {
                 return;
@@ -103,7 +103,7 @@ namespace RestlessEditor
                 return;
             }
 
-            bool isSelected = Selection.instanceIDs.Contains(instanceID);
+            bool isSelected = Selection.entityIds.Contains(instanceID);
             bool isHovering = selectionRect.Contains(Event.current.mousePosition);
 
             Color color = GetBackgroundColor(isSelected, isHovering, _hierarchyHasFocus);

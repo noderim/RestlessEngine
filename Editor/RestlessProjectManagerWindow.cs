@@ -8,8 +8,8 @@ namespace RestlessEditor
     {
         private Vector2 scrollPos;
 
-        private GUIStyle headerStyle = new GUIStyle();
-        private GUIStyle smallheaderStyle = new GUIStyle();
+        private GUIStyle headerStyle;
+        private GUIStyle smallheaderStyle;
 
         private Texture2D trelloIcon;
         private Texture2D githubIcon;
@@ -30,6 +30,9 @@ namespace RestlessEditor
         }
         private void GetStyles()
         {
+            if (headerStyle != null && smallheaderStyle != null)
+                return;
+
             headerStyle = new GUIStyle(EditorStyles.largeLabel);
             headerStyle.fontSize = 18;
             headerStyle.normal.textColor = Color.white;
@@ -94,6 +97,16 @@ namespace RestlessEditor
             GUILayout.Label("Project Workhours: " + Mathf.FloorToInt((float)RestlessProjectManager.TotalProjectWorkhours) + "h " + Mathf.FloorToInt((float)((RestlessProjectManager.TotalProjectWorkhours % 1) * 60)) + "m");
             GUILayout.Label("This Editor: " + Mathf.FloorToInt(RestlessProjectManager.Workhours) + "h " + Mathf.FloorToInt((RestlessProjectManager.Workhours % 1) * 60) + "m");
             GUILayout.Label("Current Session: " + Mathf.FloorToInt(RestlessProjectManager.CurrentSessionWorkhours) + "h " + Mathf.FloorToInt((RestlessProjectManager.CurrentSessionWorkhours % 1) * 60) + "m");
+
+            GUILayout.Space(5);
+            if (GUILayout.Button("Reset Time Trackers"))
+            {
+                if (EditorUtility.DisplayDialog("Reset Time Trackers", "Are you sure you want to reset all time tracking data? This cannot be undone.", "Reset", "Cancel"))
+                {
+                    RestlessProjectManager.ResetWorkhours();
+                }
+            }
+
             EditorGUILayout.EndVertical();
             // Project Icon
             GUILayout.Box(RestlessProjectManager.ProjectIcon ?? Texture2D.whiteTexture, GUILayout.Width(90), GUILayout.Height(90));

@@ -15,7 +15,12 @@ public static class GitVersionFetcher
         try
         {
             // Normalizujemy adres
-            string cleanUrl = gitUrl.Replace(".git", "");
+            string cleanUrl = gitUrl.Trim();
+            if (cleanUrl.EndsWith(".git"))
+            {
+                cleanUrl = cleanUrl.Substring(0, cleanUrl.Length - 4);
+            }
+            
             string[] parts = cleanUrl.Split('/');
             if (parts.Length < 2)
                 return null;
