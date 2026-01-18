@@ -1,8 +1,8 @@
 using System;
-using RestlessLib;
 using UnityEngine;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
+using RestlessLib.Architecture;
 
 namespace RestlessEngine.Diagnostics
 {
